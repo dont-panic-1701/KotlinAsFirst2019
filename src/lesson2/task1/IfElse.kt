@@ -146,7 +146,7 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val big = max(max(a, b), max(b, c))
-    val small = min(min(a, b), min(a, b))
+    val small = min(min(a, b), min(b, c))
     val middle = when (big) {
         a -> max(b, c)
         b -> max(a, c)
