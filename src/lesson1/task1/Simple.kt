@@ -79,7 +79,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
-    (deg * 1.0 + min / 60.0 + sec / 3600.0) / 180 * PI
+    (deg + min / 60.0 + sec / 3600.0) / 180 * PI
 
 /**
  * Тривиальная
@@ -126,4 +126,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double =
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
 fun numberRevert(number: Int): Int =
-    (number % 10) * 100 + ((number / 10) % 10) * 10 + number / 100
+    number % 10 * 100 + number / 10 % 10 * 10 + number / 100

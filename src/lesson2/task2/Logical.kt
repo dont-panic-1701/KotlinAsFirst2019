@@ -7,6 +7,7 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.math.min
 import kotlin.math.max
+import kotlin.comparisons.maxOf
 
 /**
  * Пример
@@ -59,7 +60,7 @@ fun daysInMonth(month: Int, year: Int): Int = when (month) {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = (r2 >= sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) + r1)
+): Boolean = (r2 >= sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1)
 
 /**
  * Средняя
@@ -71,8 +72,7 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    val biggestside = max(max(a, b), max(b, c))
-    return when (biggestside) {
+    return when (maxOf(a, b, c)) {
         a -> min(b, c) <= min(r, s) && max(b, c) <= max(r, s)
         b -> min(a, c) <= min(r, s) && max(a, c) <= max(r, s)
         else -> min(a, b) <= min(r, s) && max(a, b) <= max(r, s)

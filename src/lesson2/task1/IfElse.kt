@@ -3,10 +3,12 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
+import kotlin.comparisons.maxOf
+import kotlin.comparisons.minOf
 
 /**
  * Пример
@@ -86,7 +88,7 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val halfway: Double = ((t1 * v1 + t2 * v2 + t3 * v3) / 2)
+    val halfway = ((t1 * v1 + t2 * v2 + t3 * v3) / 2)
     return when {
         t1 * v1 >= halfway -> halfway / v1
         t1 * v1 + t2 * v2 >= halfway -> (halfway - t1 * v1) / v2 + t1
@@ -145,8 +147,8 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val big = max(max(a, b), max(b, c))
-    val small = min(min(a, b), min(b, c))
+    val big = maxOf(a, b, c)
+    val small = minOf(a, b, c)
     val middle = when (big) {
         a -> max(b, c)
         b -> max(a, c)
@@ -155,11 +157,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 
     if (big >= small + middle) return -1
 
-    val ugol =(middle * middle + small * small - big * big) / (2 * middle * small)
+    val angle = (middle * middle + small * small - big * big) / (2 * middle * small)
 
-    return if (ugol > 0.0) 0
-    else if (ugol < 0.0) 2
-    else 1
+    return when {
+        angle > 0.0 -> 0
+        angle < 0.0 -> 2
+        else -> 1
+    }
 }
 
 /**
@@ -172,4 +176,3 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
     if (b < c || d < a) -1 else (min(b, d) - max(a, c))
-
