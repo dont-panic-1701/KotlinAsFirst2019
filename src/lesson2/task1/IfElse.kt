@@ -157,11 +157,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 
     if (big >= small + middle) return -1
 
-    val angle = (middle * middle + small * small - big * big) / (2 * middle * small)
+    val biggestAngle = (middle * middle + small * small - big * big) / (2 * middle * small)
 
     return when {
-        angle > 0.0 -> 0
-        angle < 0.0 -> 2
+        biggestAngle > 0.0 -> 0
+        biggestAngle < 0.0 -> 2
         else -> 1
     }
 }
