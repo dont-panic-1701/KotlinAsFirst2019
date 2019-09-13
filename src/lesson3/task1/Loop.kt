@@ -10,9 +10,6 @@ import kotlin.math.pow
 import kotlin.math.PI
 
 
-fun tset(n: Int): Int = sqrt(n.toDouble()).toInt()
-
-
 /**
  * Пример
  *
