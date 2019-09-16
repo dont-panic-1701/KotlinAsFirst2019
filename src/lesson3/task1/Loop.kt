@@ -299,9 +299,9 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var one = 1
+    var one = 0
     var another = 1
-    var i = 2
+    var i = 1
     var switch = true
     while (i < n) {
         if (switch) {
@@ -313,8 +313,5 @@ fun fibSequenceDigit(n: Int): Int {
         }
         switch = !switch
     }
-    return if (n in 3 until i)
-        if (!switch) (one / 10.0.pow(i - n).toInt() % 10) else (another / 10.0.pow(i - n).toInt() % 10)
-    else
-        if (!switch) (one) % 10 else (another) % 10
+    return if (!switch) (one / 10.0.pow(i - n).toInt() % 10) else (another / 10.0.pow(i - n).toInt() % 10)
 }
