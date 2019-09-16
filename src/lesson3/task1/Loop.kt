@@ -5,6 +5,7 @@ package lesson3.task1
 import lesson1.task1.sqr
 import kotlin.math.sqrt
 import kotlin.math.min
+import kotlin.math.max
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.PI
@@ -92,17 +93,9 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var one = 1
     var another = 1
-    for (i in 3..n) {
-        when (i % 2) {
-            1 -> one += another
-            0 -> another += one
-        }
-    }
-    return when (n % 2) {
-        0 -> another
-        else -> one
-    }
-
+    for (i in 3..n)
+        if (i % 2 == 1) one += another else another += one
+    return if (n % 2 == 0) another else one
 }
 
 /**
@@ -111,15 +104,14 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var gcd = 1
-    for (d in min(m, n) downTo 2)
-        if (m % d == 0 && n % d == 0) {
-            gcd = d
-            break
-        }
-    return m * n / gcd
+
+fun gcd(a: Int, b: Int): Int {
+    return if (a % b == 0) b
+    else gcd(b, a % b)
 }
+
+fun lcm(m: Int, n: Int): Int = if (m > n) m / gcd(m, n) * n else n / gcd(n, m) * m
+
 
 /**
  * Простая
@@ -145,7 +137,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == m * n
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(max(m, n), min(m, n)) == 1
 
 /**
  * Простая
@@ -155,10 +147,10 @@ fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == m * n
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if (sqr(sqrt(m.toDouble()).toInt()) == m) return true
-    if (n == Int.MAX_VALUE)
-        return sqr(sqrt(m.toDouble()).toInt() + 1) < n // почему это не работает?
-    return sqr(sqrt(m.toDouble()).toInt() + 1) <= n
+    val lesserSqrt = sqrt(m.toDouble()).toInt()
+    if (sqr(lesserSqrt) == m) return true
+    if (sqr(lesserSqrt + 1) < 0) return false
+    return sqr(lesserSqrt + 1) <= n
 }
 
 /**
@@ -287,14 +279,14 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {  //посмотреть с какого числа квадраты идут двух\трёх\четырёхзначные
+fun squareSequenceDigit(n: Int): Int {
     var count = 1
     var i = 1
     while (i < n) {
         count += 1
         i += digitNumber(count * count)
     }
-    return if (i > n) (count * count / 10.0.pow(i - n).toInt() % 10) else (count * count) % 10
+    return (count * count / 10.0.pow(i - n).toInt() % 10)
 }
 
 /**
