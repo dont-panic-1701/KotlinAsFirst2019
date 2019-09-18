@@ -127,7 +127,7 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() * 1.0 / list.size
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -139,9 +139,8 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() *
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val meanDouble = mean(list)
-    if (list.isNotEmpty())
-        for (i in 0 until list.size)
-            list[i] = list[i] - meanDouble
+    for (i in 0 until list.size)
+        list[i] = list[i] - meanDouble
     return list
 }
 
@@ -168,7 +167,11 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var px = 0
-    for (i in 0 until p.size) px += p[i] * (x.toDouble().pow(i).toInt())
+    var poweredX = 1.0
+    for (i in p) {
+        px += i * poweredX.toInt()
+        poweredX *= x
+    }
     return px
 }
 
@@ -194,7 +197,18 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var number = n
+    val divisors = mutableListOf<Int>()
+    for (m in 2..sqrt(n.toDouble()).toInt()) {
+        while (number % m == 0) {
+            number /= m
+            divisors.add(m)
+        }
+    }
+    if (number != 1) divisors.add(number)
+    return divisors
+}
 
 /**
  * Сложная
@@ -203,7 +217,7 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя
@@ -212,7 +226,16 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    if (n == 0) return listOf(0)
+    val answer = mutableListOf<Int>()
+    var number = n
+    while (number > 0) {
+        answer.add(0, number % base)
+        number /= base
+    }
+    return answer
+}
 
 /**
  * Сложная
@@ -225,7 +248,18 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    if (n == 0) return "0"
+    val localAbc = "0123456789abcdefghijklmnopqrstuvwxyz"
+    var answer = ""
+    var number = n
+    while (number > 0) {
+        answer = localAbc[number % base] + answer
+        number /= base
+    }
+    return answer
+
+}
 
 /**
  * Средняя
@@ -234,7 +268,15 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var answer = 0
+    var poweredBase = base.toDouble().pow(digits.size-1)
+    for (i in digits) {
+        answer += i * poweredBase.toInt()
+        poweredBase /= base
+    }
+    return answer
+}
 
 /**
  * Сложная

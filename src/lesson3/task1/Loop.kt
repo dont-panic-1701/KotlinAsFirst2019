@@ -110,7 +110,7 @@ fun gcd(a: Int, b: Int): Int {
     else gcd(b, a % b)
 }
 
-fun lcm(m: Int, n: Int): Int = if (m > n) m / gcd(m, n) * n else n / gcd(n, m) * m
+fun lcm(m: Int, n: Int): Int = m / gcd(m, n) * n
 
 
 /**
@@ -137,7 +137,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = gcd(max(m, n), min(m, n)) == 1
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Простая
@@ -299,19 +299,15 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var one = 0
-    var another = 1
+    var bigger = 1
+    var smaller = 0
+    var lastFib = 1
     var i = 1
-    var switch = true
     while (i < n) {
-        if (switch) {
-            one += another
-            i += digitNumber(one)
-        } else {
-            another += one
-            i += digitNumber(another)
-        }
-        switch = !switch
+        bigger += smaller
+        smaller = lastFib
+        lastFib = bigger
+        i += digitNumber(lastFib)
     }
-    return if (!switch) (one / 10.0.pow(i - n).toInt() % 10) else (another / 10.0.pow(i - n).toInt() % 10)
+    return (lastFib / 10.0.pow(i - n).toInt() % 10)
 }
