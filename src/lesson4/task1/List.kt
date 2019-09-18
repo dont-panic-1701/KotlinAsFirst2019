@@ -270,7 +270,7 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var answer = 0
-    var poweredBase = base.toDouble().pow(digits.size-1)
+    var poweredBase = base.toDouble().pow(digits.size - 1)
     for (i in digits) {
         answer += i * poweredBase.toInt()
         poweredBase /= base
