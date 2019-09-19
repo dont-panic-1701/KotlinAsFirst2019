@@ -167,9 +167,9 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var px = 0
-    var poweredX = 1.0
+    var poweredX = 1
     for (i in p) {
-        px += i * poweredX.toInt()
+        px += i * poweredX
         poweredX *= x
     }
     return px
@@ -200,11 +200,16 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var number = n
     val divisors = mutableListOf<Int>()
-    for (m in 2..sqrt(n.toDouble()).toInt()) {
+    var m = 2
+    var limitForM = sqrt(number.toDouble())
+
+    while (m <= limitForM) {
         while (number % m == 0) {
             number /= m
+            limitForM /= sqrt(m.toDouble())
             divisors.add(m)
         }
+        m += 1
     }
     if (number != 1) divisors.add(number)
     return divisors
@@ -231,10 +236,10 @@ fun convert(n: Int, base: Int): List<Int> {
     val answer = mutableListOf<Int>()
     var number = n
     while (number > 0) {
-        answer.add(0, number % base)
+        answer.add(number % base)
         number /= base
     }
-    return answer
+    return answer.reversed()
 }
 
 /**
@@ -249,16 +254,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    if (n == 0) return "0"
-    val localAbc = "0123456789abcdefghijklmnopqrstuvwxyz"
-    var answer = ""
-    var number = n
-    while (number > 0) {
-        answer = localAbc[number % base] + answer
-        number /= base
-    }
-    return answer
-
+    val localABC = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val answer = mutableListOf<Char>()
+    for (i in convert(n, base))
+        answer.add(localABC[i])
+    return answer.joinToString(separator = "")
 }
 
 /**
@@ -270,9 +270,9 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var answer = 0
-    var poweredBase = base.toDouble().pow(digits.size - 1)
+    var poweredBase = base.toDouble().pow(digits.size - 1).toInt()
     for (i in digits) {
-        answer += i * poweredBase.toInt()
+        answer += i * poweredBase
         poweredBase /= base
     }
     return answer
@@ -290,7 +290,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val localABC = "0123456789abcdefghijklmnopqrstuvwxyz"
+    var answer = 0
+    for (char in str) {
+        answer = answer * base + localABC.indexOf(char)
+    }
+    return answer
+}
 
 /**
  * Сложная
