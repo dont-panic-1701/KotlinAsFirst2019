@@ -307,7 +307,35 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val romanDgts = "IVXLCDM"
+    val arabicDgts = listOf(1, 5, 10, 50, 100, 500, 1000)
+    var number = n
+    val answer = mutableListOf<Char>()
+    for (i in 6 downTo 0 step 2) {
+        when (number / arabicDgts[i]) {
+            9 -> {
+                answer.add(romanDgts[i])
+                answer.add(romanDgts[i + 2])
+                number -= arabicDgts[i] * 9
+            }
+            in 5..8 -> {
+                answer.add(romanDgts[i + 1])
+                number -= arabicDgts[i] * 5
+            }
+            4 -> {
+                answer.add(romanDgts[i])
+                answer.add(romanDgts[i + 1])
+                number -= arabicDgts[i] * 4
+            }
+        }
+        while (number - arabicDgts[i] >= 0) {
+            answer.add(romanDgts[i])
+            number -= arabicDgts[i]
+        }
+    }
+    return answer.joinToString(separator = "")
+}
 
 /**
  * Очень сложная
