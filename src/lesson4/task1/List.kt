@@ -201,12 +201,10 @@ fun factorize(n: Int): List<Int> {
     var number = n
     val divisors = mutableListOf<Int>()
     var m = 2
-    var limitForM = sqrt(number.toDouble())
 
-    while (m <= limitForM) {
+    while (m <= sqrt(number.toDouble())) {
         while (number % m == 0) {
             number /= m
-            limitForM /= sqrt(m.toDouble())
             divisors.add(m)
         }
         m += 1
@@ -255,10 +253,7 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val localABC = "0123456789abcdefghijklmnopqrstuvwxyz"
-    val answer = mutableListOf<Char>()
-    for (i in convert(n, base))
-        answer.add(localABC[i])
-    return answer.joinToString(separator = "")
+    return convert(n, base).joinToString(separator = "") { "${localABC[it]}" }
 }
 
 /**
@@ -268,15 +263,8 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int {
-    var answer = 0
-    var poweredBase = base.toDouble().pow(digits.size - 1).toInt()
-    for (i in digits) {
-        answer += i * poweredBase
-        poweredBase /= base
-    }
-    return answer
-}
+fun decimal(digits: List<Int>, base: Int): Int =
+    digits.fold(0) { previousResult, element -> previousResult * base + element }
 
 /**
  * Сложная
@@ -290,14 +278,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int {
-    val localABC = "0123456789abcdefghijklmnopqrstuvwxyz"
-    var answer = 0
-    for (char in str) {
-        answer = answer * base + localABC.indexOf(char)
-    }
-    return answer
-}
+fun decimalFromString(str: String, base: Int): Int =
+    decimal(str.map { char -> if (char.toInt() > 96) char.toInt() - 87 else char.toInt() - 48 }, base)
 
 /**
  * Сложная
