@@ -218,6 +218,7 @@ fun factorize(n: Int): List<Int> {
     return divisors
 }
 
+
 /**
  * Сложная
  *
