@@ -283,6 +283,7 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
+
 fun decimalFromString(str: String, base: Int): Int =
     decimal(str.map { char -> if (char >= 'a') char.toInt() - 87 else char.toInt() - 48 }, base)
 
