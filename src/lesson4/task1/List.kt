@@ -4,7 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.sqrt
-import kotlin.math.pow
 
 /**
  * Пример
@@ -201,11 +200,17 @@ fun factorize(n: Int): List<Int> {
     var number = n
     val divisors = mutableListOf<Int>()
     var m = 2
-
-    while (m <= sqrt(number.toDouble())) {
+    var flag = false
+    var limitM = sqrt(number.toDouble())
+    while (m <= limitM) {
         while (number % m == 0) {
             number /= m
             divisors.add(m)
+            flag = true
+        }
+        if (flag) {
+            limitM = sqrt(number.toDouble())
+            flag = false
         }
         m += 1
     }
@@ -279,7 +284,7 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int =
-    decimal(str.map { char -> if (char.toInt() > 96) char.toInt() - 87 else char.toInt() - 48 }, base)
+    decimal(str.map { char -> if (char >= 'a') char.toInt() - 87 else char.toInt() - 48 }, base)
 
 /**
  * Сложная
@@ -290,30 +295,27 @@ fun decimalFromString(str: String, base: Int): Int =
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    val romanDgts = "IVXLCDM"
-    val arabicDgts = listOf(1, 5, 10, 50, 100, 500, 1000)
+    val pairedDgts = listOf(
+        Pair("M", 1000),
+        Pair("CM", 900),
+        Pair("D", 500),
+        Pair("CD", 400),
+        Pair("C", 100),
+        Pair("XC", 90),
+        Pair("L", 50),
+        Pair("XL", 40),
+        Pair("X", 10),
+        Pair("IX", 9),
+        Pair("V", 5),
+        Pair("IV", 4),
+        Pair("I", 1)
+    )
     var number = n
-    val answer = mutableListOf<Char>()
-    for (i in 6 downTo 0 step 2) {
-        when (number / arabicDgts[i]) {
-            9 -> {
-                answer.add(romanDgts[i])
-                answer.add(romanDgts[i + 2])
-                number -= arabicDgts[i] * 9
-            }
-            in 5..8 -> {
-                answer.add(romanDgts[i + 1])
-                number -= arabicDgts[i] * 5
-            }
-            4 -> {
-                answer.add(romanDgts[i])
-                answer.add(romanDgts[i + 1])
-                number -= arabicDgts[i] * 4
-            }
-        }
-        while (number - arabicDgts[i] >= 0) {
-            answer.add(romanDgts[i])
-            number -= arabicDgts[i]
+    val answer = mutableListOf<String>()
+    for ((roman, arabic) in pairedDgts) {
+        while (number - arabic >= 0) {
+            answer.add(roman)
+            number -= arabic
         }
     }
     return answer.joinToString(separator = "")
