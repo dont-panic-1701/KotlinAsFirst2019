@@ -286,7 +286,7 @@ fun decimal(digits: List<Int>, base: Int): Int =
  */
 
 fun decimalFromString(str: String, base: Int): Int =
-    decimal(str.map { char -> if (char >= 'a') char - 'W' else char - '0' }, base)
+    decimal(str.map { char -> if (char >= 'a') char - 'a' + 10 else char - '0' }, base)
 
 /**
  * Сложная
