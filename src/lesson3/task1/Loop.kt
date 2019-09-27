@@ -189,11 +189,8 @@ fun sin(x: Double, eps: Double): Double {
     var current = lesserX
     var answer = lesserX
     while (abs(current) >= eps) {
-        current = current * lesserX * lesserX / (count * (count + 1))
-        if (count % 4 == 2)
-            answer -= current
-        else
-            answer += current
+        current *= -1 * lesserX * lesserX / (count * (count + 1))
+        answer += current
         count += 2
     }
     return answer
@@ -214,11 +211,8 @@ fun cos(x: Double, eps: Double): Double {
     var current = 1.0
     var answer = 1.0
     while (abs(current) >= eps) {
-        current = current * lesserX * lesserX / (count * (count + 1))
-        if (count % 4 == 1)
-            answer -= current
-        else
-            answer += current
+        current *= -1 * lesserX * lesserX / (count * (count + 1))
+        answer += current
         count += 2
     }
     return answer
