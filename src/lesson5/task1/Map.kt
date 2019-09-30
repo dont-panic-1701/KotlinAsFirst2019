@@ -198,10 +198,10 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         else
             answer[share]!!.add(price)
     }
-    val anotherDamnAnswer = mutableMapOf<String, Double>()
+    val anotherAnswer = mutableMapOf<String, Double>()
     for ((share, price) in answer)
-        anotherDamnAnswer[share] = price.sum() / price.size
-    return anotherDamnAnswer
+        anotherAnswer[share] = price.sum() / price.size
+    return anotherAnswer
 }
 
 /**
