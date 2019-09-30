@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.util.*
+
 /**
  * Пример
  *
@@ -135,7 +137,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
     for ((key, value) in b)
-        if (a[key] == value)
+        if (a.containsKey(key) && Objects.equals(a[key], value))
             a.remove(key)
 }
 
@@ -188,14 +190,17 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val answer = mutableMapOf<String, Double>()
+    val answer = mutableMapOf<String, MutableList<Double>>()
     for ((share, price) in stockPrices) {
         if (share !in answer)
-            answer[share] = price
+            answer[share] = mutableListOf(price)
         else
-            answer[share] = (price + answer[share]!!) / 2
+            answer[share]!!.add(price)
     }
-    return answer
+    val anotherDamnAnswer = mutableMapOf<String, Double>()
+    for ((share, price) in answer)
+        anotherDamnAnswer[share] = price.sum() / price.size
+    return anotherDamnAnswer
 }
 
 /**
