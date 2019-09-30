@@ -198,10 +198,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         else
             answer[share]!!.add(price)
     }
-    val anotherAnswer = mutableMapOf<String, Double>()
-    for ((share, price) in answer)
-        anotherAnswer[share] = price.sum() / price.size
-    return anotherAnswer
+    return answer.mapValues { it.value.average() }
 }
 
 /**
@@ -219,7 +216,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var answer: Pair<String?, Double> = null to Double.MAX_VALUE
+    for ((name, pair) in stuff) {
+        if (pair.first == kind && pair.second < answer.second)
+            answer = name to pair.second
+    }
+    return answer.first
+}
 
 /**
  * Средняя
@@ -230,7 +234,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = (word.toSet() - chars).isEmpty()
 
 /**
  * Средняя
