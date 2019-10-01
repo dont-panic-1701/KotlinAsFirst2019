@@ -137,8 +137,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
     for ((key, value) in b)
-        if (a.containsKey(key) && Objects.equals(a[key], value))
-            a.remove(key)
+        a.remove(key, value)
 }
 
 /**
@@ -248,7 +247,17 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = (word.toSet() - cha
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun totalRepeats(word: List<Any>): Map<String, Int> {
+    val answer = mutableMapOf<Any, Int>()
+    for (letter in word)
+        if (letter !in answer)
+            answer[letter] = 1
+        else
+            answer[letter] = answer[letter]!!.plus(1)
+    return answer.mapKeys { it.key.toString() }
+}
+
+fun extractRepeats(list: List<String>): Map<String, Int> = totalRepeats(list).filter { it.value > 1 }
 
 /**
  * Средняя
@@ -259,7 +268,9 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+
+fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRepeats(it.toList()) }.toSet().size
+
 
 /**
  * Сложная
