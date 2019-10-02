@@ -311,7 +311,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             val person = queue.removeAt(0)                     // забираем чела в порядке очереди
             if (person !in friends) {                                // если чела нет в начальном листе, то и знакомых у него нет
                 answer[person] = mutableSetOf()                      // но сет в ответе ему нужен, хоть и пустой
-                break
+                continue
             }
             for (buddy in friends.getValue(person)) {
                 answer[buddy]?.let { answer[person]?.addAll(it) }       // добавить челу всех знакомых в списке у знакомого
