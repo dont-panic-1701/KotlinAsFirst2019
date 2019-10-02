@@ -297,7 +297,7 @@ fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRe
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> { // кривой bfs
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // игнорируйте комментарии
     val answer = friends.mapValues { it.value.toMutableSet() }.toMutableMap()
     val queue = mutableListOf<String>()
     val checked = mutableMapOf<String, Boolean>()
@@ -308,18 +308,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         checked[name] = true
 
         while (queue.isNotEmpty()) {
-            val person = queue.removeAt(0) // забираем чела в порядке очереди
-            if (person !in friends) { // если чела нет в начальном листе, то и знакомых у него нет
-                answer[person] = mutableSetOf() // но сет в ответе ему нужен, хоть и пустой
+            val person = queue.removeAt(0)                     // забираем чела в порядке очереди
+            if (person !in friends) {                                // если чела нет в начальном листе, то и знакомых у него нет
+                answer[person] = mutableSetOf()                      // но сет в ответе ему нужен, хоть и пустой
                 break
             }
             for (buddy in friends.getValue(person)) {
-                answer[buddy]?.let { answer[person]?.addAll(it) } // добавить челу всех знакомых в списке у знакомого
+                answer[buddy]?.let { answer[person]?.addAll(it) }       // добавить челу всех знакомых в списке у знакомого
 
-                if (checked[buddy] == true) // если знакомый уже зачекан, то
-                    break // все знакомые дальше по ветке зачеканы
-                else {
-                    queue.add(buddy) // знакомый следующий на зачекиванье
+                if (checked[buddy] != true) {
+                    queue.add(buddy)               // знакомый следующий на зачекиванье
                     checked[buddy] = true
                 }
             }
