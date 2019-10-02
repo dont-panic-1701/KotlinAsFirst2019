@@ -297,7 +297,7 @@ fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRe
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // игнорируйте комментарии
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // она вообще не решается через bfs, да?
     val answer = friends.mapValues { it.value.toMutableSet() }.toMutableMap()
     val queue = mutableListOf<String>()
     val checked = mutableMapOf<String, Boolean>()
@@ -308,21 +308,21 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         checked[name] = true
 
         while (queue.isNotEmpty()) {
-            val person = queue.removeAt(0)                     // забираем чела в порядке очереди
-            if (person !in friends) {                                // если чела нет в начальном листе, то и знакомых у него нет
-                answer[person] = mutableSetOf()                      // но сет в ответе ему нужен, хоть и пустой
+            val person = queue.removeAt(0)
+            if (person !in friends) {
+                answer[person] = mutableSetOf()
                 continue
             }
             for (buddy in friends.getValue(person)) {
-                answer[buddy]?.let { answer[person]?.addAll(it) }       // добавить челу всех знакомых в списке у знакомого
+                answer[buddy]?.let { answer[person]?.addAll(it) }
                 if (checked[buddy] != true) {
-                    queue.add(buddy)               // знакомый следующий на зачекиванье
+                    queue.add(buddy)
                     checked[buddy] = true
                 }
             }
         }
     }
-    answer.mapValues { it.value.remove(it.key) } // на случай замкнутых циклов
+    answer.mapValues { it.value.remove(it.key) }
     return answer
 }
 
