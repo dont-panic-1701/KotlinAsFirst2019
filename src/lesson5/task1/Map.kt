@@ -315,7 +315,6 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             }
             for (buddy in friends.getValue(person)) {
                 answer[buddy]?.let { answer[person]?.addAll(it) }       // добавить челу всех знакомых в списке у знакомого
-
                 if (checked[buddy] != true) {
                     queue.add(buddy)               // знакомый следующий на зачекиванье
                     checked[buddy] = true
