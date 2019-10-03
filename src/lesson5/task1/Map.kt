@@ -297,33 +297,40 @@ fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRe
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // это не работает, переделываю в dfs
+fun dfs(
+    friends: Map<String, Set<String>>,
+    checked: MutableMap<String, Boolean>,
+    person: String,
+    answer: MutableMap<String, MutableSet<String>>
+) {
+    if (checked[person] != true)                             // we don't wanna check some dudes twice do we
+        checked[person] = true
+    else
+        return
+    if (person !in friends) {                                // if dude's not in 'friends', he has no buddies :c
+        answer[person] = mutableSetOf()                      // but he must have an empty set in answer
+        return
+    }
+    for (buddy in friends.getValue(person)) {                // if buddy's not checked yet, gotta check all his branch
+        if (checked[buddy] != true)
+            dfs(friends, checked, buddy, answer)
+        answer[buddy]?.let { answer[person]?.addAll(it) }    // after (or if he's alrdy checked) add him buddies of buddies (idea why)
+    }
+
+
+}
+
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // пожалуйста игнорируйте комментарии, без них я забуду что как
     val answer = friends.mapValues { it.value.toMutableSet() }.toMutableMap()
-    val queue = mutableListOf<String>()
     val checked = mutableMapOf<String, Boolean>()
     friends.forEach { name -> checked[name.key] = false }
-
     for ((name) in friends) {
-        queue.add(name)
-        checked[name] = true
-
-        while (queue.isNotEmpty()) {
-            val person = queue.removeAt(0)
-            if (person !in friends) {
-                answer[person] = mutableSetOf()
-                continue
-            }
-            for (buddy in friends.getValue(person)) {
-                answer[buddy]?.let { answer[person]?.addAll(it) }
-                if (checked[buddy] != true) {
-                    queue.add(buddy)
-                    checked[buddy] = true
-                }
-            }
-        }
+        dfs(friends, checked, name, answer)
     }
-    answer.mapValues { it.value.remove(it.key) }
+
+    answer.mapValues { it.value.remove(it.key) }              // anti-cycle check
     return answer
+
 }
 
 /**
