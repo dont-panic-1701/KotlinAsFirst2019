@@ -299,31 +299,33 @@ fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRe
  */
 fun dfs(
     friends: Map<String, Set<String>>,
-    checked: MutableMap<String, Boolean>,
+    checked: MutableMap<String, Int>,
     person: String,
     answer: MutableMap<String, MutableSet<String>>
 ) {
-    if (checked[person] != true)                             // we don't wanna check some dudes twice do we
-        checked[person] = true
-    else
-        return
+    checked[person] = 1                                      // "1" means "currently checking"
     if (person !in friends) {                                // if dude's not in 'friends', he has no buddies :c
         answer[person] = mutableSetOf()                      // but he must have an empty set in answer
         return
     }
-    for (buddy in friends.getValue(person)) {                // if buddy's not checked yet, gotta check all his branch
-        if (checked[buddy] != true)
-            dfs(friends, checked, buddy, answer)
-        answer[buddy]?.let { answer[person]?.addAll(it) }    // after (or if he's alrdy checked) add him buddies of buddies (idea why)
+    for (buddy in friends.getValue(person)) {                // if buddy's not currently checking, gotta check all his branch
+        when (checked[buddy]) {
+            1 -> {
+                checked[person] = 2
+                dfs(friends, checked, buddy, answer)
+            }
+            2 -> true                                        // i don't need 2 here
+            else -> dfs(friends, checked, buddy, answer)
+        }
+        answer[buddy]?.let { answer[person]?.addAll(it) }     // after (or if he's alrdy checked) add him buddies of buddies (idea why)
+        checked[buddy] = 2                                    // done with this buddy
     }
-
-
 }
 
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {    // пожалуйста игнорируйте комментарии, без них я забуду что как
     val answer = friends.mapValues { it.value.toMutableSet() }.toMutableMap()
-    val checked = mutableMapOf<String, Boolean>()
-    friends.forEach { name -> checked[name.key] = false }
+    val checked = mutableMapOf<String, Int>()
+    friends.forEach { name -> checked[name.key] = 0 }
     for ((name) in friends) {
         dfs(friends, checked, name, answer)
     }
