@@ -310,7 +310,7 @@ fun dfs(
     }
     for (buddy in friends.getValue(person)) {                // if buddy's not currently checking, gotta check all his branch
         when (checked[buddy]) {
-            1 -> {
+            1 -> {                                           // if he _is_ - break graph cycle and go check
                 checked[person] = 2
                 dfs(friends, checked, buddy, answer)
             }
@@ -375,4 +375,24 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+class MtPair(var cost: Int, var names: MutableSet<String>)
+
+fun bagPacking(
+    treasures: Map<String, Pair<Int, Int>>,
+    capacity: Int
+): Set<String> {
+    val cells = mutableListOf<MtPair>()
+    for (i in 0..capacity)
+        cells.add(MtPair(0, mutableSetOf()))
+    for ((name, weigVal) in treasures) {
+        for (i in weigVal.first..capacity) {
+            val newCost = cells[i - weigVal.first].cost + weigVal.second
+            if (cells[i].cost < newCost) {
+                cells[i].cost = newCost
+                cells[i].names = mutableSetOf(name)
+                cells[i].names.addAll(cells[i - weigVal.first].names)
+            }
+        }
+    }
+    return cells[capacity].names
+}
