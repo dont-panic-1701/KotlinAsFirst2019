@@ -317,7 +317,18 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    var left = 0
+    var right = list.size - 1
+    while (left < right) {
+        when (list[left] + list[right]) {
+            number -> return left to right
+            in 0 until number -> left += 1
+            else -> right -= 1
+        }
+    }
+    return -1 to -1
+}
 
 /**
  * Очень сложная
@@ -346,9 +357,7 @@ fun bagPacking(
     treasures: Map<String, Pair<Int, Int>>,
     capacity: Int
 ): Set<String> {
-    val cells = mutableListOf<MtPair>()
-    for (i in 0..capacity)
-        cells.add(MtPair(0, mutableSetOf()))
+    val cells = MutableList(capacity + 1) { MtPair(0, mutableSetOf()) }
     for ((name, weigVal) in treasures) {
         for (i in weigVal.first..capacity) {
             val newCost = cells[i - weigVal.first].cost + weigVal.second
