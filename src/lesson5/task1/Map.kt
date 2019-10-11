@@ -366,7 +366,7 @@ fun bagPacking(
 ): Set<String> {
     val cells = MutableList(capacity + 1) { MtPair(0, mutableSetOf()) }
     for ((name, weigVal) in treasures) {
-        for (i in weigVal.first..capacity) {
+        for (i in capacity downTo weigVal.first) {
             val newCost = cells[i - weigVal.first].cost + weigVal.second
             if (cells[i].cost < newCost) {
                 cells[i].cost = newCost
