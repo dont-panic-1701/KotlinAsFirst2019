@@ -3,6 +3,8 @@
 package lesson5.task1
 
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Пример
@@ -323,7 +325,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var right = list.size - 1
     while (left < right) {
         when (sortedList[left] + sortedList[right]) {
-            number -> return left to right
+            number -> {
+                val indexLeft = list.indexOf(sortedList[left])
+                val indexRight = list.indexOf(sortedList[right])
+                return min(indexLeft, indexRight) to max(indexLeft, indexRight)
+            }
             in 0 until number -> left += 1
             else -> right -= 1
         }
