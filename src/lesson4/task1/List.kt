@@ -330,4 +330,75 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val dgts = listOf(
+        Pair(900, "девятьсот"),
+        Pair(800, "восемьсот"),
+        Pair(700, "семьсот"),
+        Pair(600, "шестьсот"),
+        Pair(500, "пятьсот"),
+        Pair(400, "четыреста"),
+        Pair(300, "триста"),
+        Pair(200, "двести"),
+        Pair(100, "сто"),
+        Pair(90, "девяносто"),
+        Pair(80, "восемьдесят"),
+        Pair(70, "семьдесят"),
+        Pair(60, "шестьдесят"),
+        Pair(50, "пятьдесят"),
+        Pair(40, "сорок"),
+        Pair(30, "тридцать"),
+        Pair(20, "двадцать"),
+        Pair(19, "девятнадцать"),
+        Pair(18, "восемнадцать"),
+        Pair(17, "семнадцать"),
+        Pair(16, "шестнадцать"),
+        Pair(15, "пятнядцать"),
+        Pair(14, "четырнадцать"),
+        Pair(13, "тринадцать"),
+        Pair(12, "двенадцать"),
+        Pair(11, "одиннадцать"),
+        Pair(10, "десять")
+    )
+    val last = mapOf(
+        1 to "один",
+        2 to "два",
+        3 to "три",
+        4 to "четыре",
+        5 to "пять",
+        6 to "шесть",
+        7 to "семь",
+        8 to "восемь",
+        9 to "девять"
+    )
+    val lastThou = mapOf(
+        0 to "тысяч",
+        1 to "одна тысяча",
+        2 to "две тысячи",
+        3 to "три тысячи",
+        4 to "четыре тысячи",
+        5 to "пять тысяч",
+        6 to "шесть тысяч",
+        7 to "семь тысяч",
+        8 to "восемь тысяч",
+        9 to "девять тысяч"
+    )
+    val firstAnswer = mutableListOf<String>()
+    val secondAnswer = mutableListOf<String>()
+    var firstThree = n / 1000
+    var lastThree = n % 1000
+    val flag = firstThree > 0
+    for ((number, str) in dgts) {
+        if (firstThree >= number) {
+            firstThree -= number
+            firstAnswer.add(str)
+        }
+        if (lastThree >= number) {
+            lastThree -= number
+            secondAnswer.add(str)
+        }
+    }
+    if (flag) firstAnswer.add(lastThou[firstThree]!!)
+    if (lastThree > 0) secondAnswer.add(last[lastThree]!!)
+    return (firstAnswer + secondAnswer).joinToString(separator = " ")
+}
