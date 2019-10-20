@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -69,7 +71,33 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val months = mapOf(
+        "января" to 1,
+        "февраля" to 2,
+        "марта" to 3,
+        "апреля" to 4,
+        "мая" to 5,
+        "июня" to 6,
+        "июля" to 7,
+        "августа" to 8,
+        "сентября" to 9,
+        "октября" to 10,
+        "ноября" to 11,
+        "декабря" to 12
+    )
+    val dayMonthYear = str.split(" ")
+    return try {
+        val month = months[dayMonthYear[1]]
+        val day = dayMonthYear[0].toInt()
+        val year = dayMonthYear[2].toInt()
+        if (day !in 1..daysInMonth(month!!, year) || dayMonthYear.size != 3)
+            throw Exception()
+        String.format("%02d.%02d.%d", day, month, year)
+    } catch (e: Exception) {
+        ""
+    }
+}
 
 /**
  * Средняя
@@ -81,7 +109,34 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val months = mapOf(
+        1 to "января",
+        2 to "февраля",
+        3 to "марта",
+        4 to "апреля",
+        5 to "мая",
+        6 to "июня",
+        7 to "июля",
+        8 to "августа",
+        9 to "сентября",
+        10 to "октября",
+        11 to "ноября",
+        12 to "декабря"
+    )
+    val dayMonthYear = digital.split(".")
+    return try {
+        val day = dayMonthYear[0].toInt()
+        val month = dayMonthYear[1].toInt()
+        val year = dayMonthYear[2].toInt()
+        if (day !in 1..daysInMonth(month, year) || dayMonthYear.size != 3)
+            throw Exception()
+        String.format("%d %s %d", day, months[month], year)
+    } catch (e: Exception) {
+        ""
+    }
+
+}
 
 /**
  * Средняя
@@ -208,4 +263,67 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+
+fun illArgExCheck(commands: String): Boolean {
+    val legalChar = setOf(' ', '+', '-', '>', '<')
+    var count = 0
+    for (char in commands) {
+        when (char) {
+            '[' -> count++
+            ']' -> if (count == 0) return true else count--
+            !in legalChar -> return true
+        }
+    }
+    return (count != 0)
+}
+
+fun deadCycle(commands: String, start: Int): Int {
+    var count = 1
+    var ind = start
+    while (count > 0) {
+        if (commands[ind] == '[') count++
+        if (commands[ind] == ']') count--
+        ind++
+    }
+    return ind
+}
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+
+    if (illArgExCheck(commands)) throw IllegalArgumentException()
+
+    val array = MutableList(cells) { 0 }
+    val cycleStarts = mutableListOf<Int>()
+    var position = cells / 2
+    var mlimit = limit
+    val len = commands.length
+    var i = 0
+
+    while (i < len) {
+        when (commands[i]) {
+            '[' -> {
+                if (array[position] != 0) cycleStarts.add(i)
+                else {
+                    i = deadCycle(commands, i + 1)
+                    mlimit--
+                }
+            }
+            ']' -> {
+                if (array[position] != 0)
+                    i = cycleStarts[cycleStarts.size - 1]
+                else
+                    cycleStarts.removeAt(cycleStarts.size - 1)
+            }
+            '+' -> array[position]++
+            '-' -> array[position]--
+            '>' -> position++
+            '<' -> position--
+        }
+        mlimit--
+        if (mlimit == 0) break
+        i++
+        if (position !in 0 until cells) throw IllegalStateException()
+    }
+    return array
+}
