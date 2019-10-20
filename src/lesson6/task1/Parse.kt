@@ -109,34 +109,7 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String {
-    val months = mapOf(
-        1 to "января",
-        2 to "февраля",
-        3 to "марта",
-        4 to "апреля",
-        5 to "мая",
-        6 to "июня",
-        7 to "июля",
-        8 to "августа",
-        9 to "сентября",
-        10 to "октября",
-        11 to "ноября",
-        12 to "декабря"
-    )
-    val dayMonthYear = digital.split(".")
-    return try {
-        val day = dayMonthYear[0].toInt()
-        val month = dayMonthYear[1].toInt()
-        val year = dayMonthYear[2].toInt()
-        if (day !in 1..daysInMonth(month, year) || dayMonthYear.size != 3)
-            throw Exception()
-        String.format("%d %s %d", day, months[month], year)
-    } catch (e: Exception) {
-        ""
-    }
-
-}
+fun dateDigitToStr(digital: String): String =TODO()
 
 /**
  * Средняя
@@ -286,7 +259,7 @@ fun deadCycle(commands: String, start: Int): Int {
         if (commands[ind] == ']') count--
         ind++
     }
-    return ind
+    return ind - 1
 }
 
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
