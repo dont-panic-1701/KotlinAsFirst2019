@@ -278,7 +278,7 @@ fun illArgExCheck(commands: String): Boolean {
     return (count != 0)
 }
 
-fun deadCycle(commands: String, start: Int): Int {
+fun skipDeadCycle(commands: String, start: Int): Int {
     var count = 1
     var ind = start
     while (count > 0) {
@@ -305,8 +305,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '[' -> {
                 if (array[position] != 0) cycleStarts.add(i)
                 else {
-                    i = deadCycle(commands, i + 1)
-                    mlimit--
+                    i = skipDeadCycle(commands, i + 1)
                 }
             }
             ']' -> {
