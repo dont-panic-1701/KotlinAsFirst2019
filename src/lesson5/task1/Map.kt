@@ -299,8 +299,34 @@ fun hasAnagrams(words: List<String>): Boolean = words.size > words.map { totalRe
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
+fun dfs(
+    friends: Map<String, Set<String>>,
+    checked: MutableSet<String>,
+    person: String,
+    answer: MutableMap<String, MutableSet<String>>
+) {
+    checked.add(person)                                   // "1" means "currently checking"
+    if (person !in friends) {                                  // if dude's not in 'friends', he has no buddies :c
+        answer[person] = mutableSetOf()                      // but he must have an empty set in answer
+        return
+    }
+    friends[person]!!.filter { it !in checked }.map {
+        dfs(friends, checked, it, answer)
+    }
+}
 
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val answer = mutableMapOf<String, MutableSet<String>>()
+    val checked = mutableSetOf<String>()
+    for ((name) in friends) {
+        dfs(friends, checked, name, answer)
+        answer[name] = mutableSetOf<String>()
+        checked.remove(name)
+        answer[name]!!.addAll(checked)           //  answer[name] = checked выдавало пустые сеты в ответе, видимо из-за следующей строки
+        checked.clear()
+    }
+    return answer
+}
 
 /**
  * Сложная

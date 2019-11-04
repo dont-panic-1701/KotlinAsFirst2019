@@ -210,6 +210,10 @@ class Tests {
             mapOf("MSFT" to 150.0, "NFLX" to 45.0),
             averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0, "NFLX" to 50.0))
         )
+        assertEquals(
+            mapOf("MSFT" to 200.0, "NFLX" to 40.0),
+            averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 100.0, "MSFT" to 400.0, "NFLX" to 40.0))
+        )
     }
 
     @Test
@@ -314,21 +318,20 @@ class Tests {
         )
         assertEquals(
             mapOf(
-                "0" to setOf(),
-                "1" to setOf("4a", "0", "2"),
-                "2" to setOf("1", "4a", "0"),
-                "3" to setOf(),
-                "4a" to setOf("0", "1", "2"),
-                "182" to setOf("0")
+                "1" to setOf("2", "3", "4", "5", "6"),
+                "2" to setOf("1", "3", "4", "5", "6"),
+                "3" to setOf("1", "2", "4", "5", "6"),
+                "4" to setOf("1", "2", "3", "5", "6"),
+                "5" to setOf("1", "2", "3", "4", "6"),
+                "6" to setOf()
             ),
             propagateHandshakes(
                 mapOf(
-                    "0" to setOf(),
-                    "1" to setOf("4a"),
+                    "1" to setOf("3", "5"),
                     "2" to setOf("1"),
-                    "3" to setOf(),
-                    "4a" to setOf("0", "1", "2"),
-                    "182" to setOf("0")
+                    "3" to setOf("2"),
+                    "4" to setOf("1"),
+                    "5" to setOf("4", "6")
                 )
             )
         )
