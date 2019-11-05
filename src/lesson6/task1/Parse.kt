@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import kotlin.math.max
 
 /**
  * Пример
@@ -71,6 +72,22 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+fun months(number: Boolean): String {
+    val months = mapOf(
+        "января" to "1",
+        "февраля" to "2",
+        "марта" to "3",
+        "апреля" to "4",
+        "мая" to "5",
+        "июня" to "6",
+        "июля" to "7",
+        "августа" to "8",
+        "сентября" to "9",
+        "октября" to "10",
+        "ноября" to "11",
+        "декабря" to "12"
+    )
+}
 fun dateStrToDigit(str: String): String {
     val months = mapOf(
         "января" to 1,
@@ -91,8 +108,8 @@ fun dateStrToDigit(str: String): String {
         val month = months[dayMonthYear[1]]
         val day = dayMonthYear[0].toInt()
         val year = dayMonthYear[2].toInt()
-        if (day !in 1..daysInMonth(month!!, year) || dayMonthYear.size != 3)
-            throw Exception()
+        if (day !in 1..daysInMonth(requireNotNull(month), year) || dayMonthYear.size != 3)
+            throw IllegalArgumentException()
         String.format("%02d.%02d.%d", day, month, year)
     } catch (e: Exception) {
         ""
@@ -164,7 +181,15 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var mx = -1
+    for (result in jumps.split(" ")) {
+        if (result != "-" && result != "%") {
+            if (result.toIntOrNull() == null) return -1 else mx = max(mx, result.toInt())
+        }
+    }
+    return if (mx > -1) mx else -1
+}
 
 /**
  * Сложная
@@ -177,7 +202,23 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var mx = -1
+    val cleanJumps = jumps.split(" ")
+    for (i in 0 until cleanJumps.size) {
+        if (i % 2 != 0) {
+            for (ch in cleanJumps[i])
+                when (ch) {
+                    '+' -> mx = cleanJumps[i - 1].toInt()
+                    '-' -> true
+                    '%' -> true
+                    else -> return -1
+                }
+        } else
+            if (cleanJumps[i].toIntOrNull() == null) return -1
+    }
+    return mx
+}
 
 /**
  * Сложная
