@@ -274,7 +274,7 @@ fun fromRoman(roman: String): Int {
         if (count > 3) return -1
         lastIndex = i
     }
-    return answer.toInt()
+    return if (answer > 0) answer.toInt() else -1
 }
 
 /**
