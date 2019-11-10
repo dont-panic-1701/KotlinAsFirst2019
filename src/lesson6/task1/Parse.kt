@@ -4,6 +4,7 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import kotlin.math.max
+import kotlin.math.pow
 
 /**
  * Пример
@@ -72,46 +73,37 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun months(number: Boolean): String {
-    val months = mapOf(
-        "января" to "1",
-        "февраля" to "2",
-        "марта" to "3",
-        "апреля" to "4",
-        "мая" to "5",
-        "июня" to "6",
-        "июля" to "7",
-        "августа" to "8",
-        "сентября" to "9",
-        "октября" to "10",
-        "ноября" to "11",
-        "декабря" to "12"
+fun monthsFun(numberGiven: Boolean, input: String): String { // проверить номер правда ли это номер перед вызовом!!!
+    val months = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
     )
+    if (numberGiven && input.toInt() in 1..12) return months[input.toInt() - 1]
+    if (!numberGiven) return "${months.indexOf(input) + 1}"
+    return "-1"
 }
+
 fun dateStrToDigit(str: String): String {
-    val months = mapOf(
-        "января" to 1,
-        "февраля" to 2,
-        "марта" to 3,
-        "апреля" to 4,
-        "мая" to 5,
-        "июня" to 6,
-        "июля" to 7,
-        "августа" to 8,
-        "сентября" to 9,
-        "октября" to 10,
-        "ноября" to 11,
-        "декабря" to 12
-    )
     val dayMonthYear = str.split(" ")
+    if (dayMonthYear.size != 3) return ""
     return try {
-        val month = months[dayMonthYear[1]]
+        val month = monthsFun(false, dayMonthYear[1]).toInt()
         val day = dayMonthYear[0].toInt()
         val year = dayMonthYear[2].toInt()
-        if (day !in 1..daysInMonth(requireNotNull(month), year) || dayMonthYear.size != 3)
+        if (day !in 1..daysInMonth(month, year) || month !in 1..12)
             throw IllegalArgumentException()
         String.format("%02d.%02d.%d", day, month, year)
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
         ""
     }
 }
@@ -127,29 +119,16 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val months = mapOf(
-        1 to "января",
-        2 to "февраля",
-        3 to "марта",
-        4 to "апреля",
-        5 to "мая",
-        6 to "июня",
-        7 to "июля",
-        8 to "августа",
-        9 to "сентября",
-        10 to "октября",
-        11 to "ноября",
-        12 to "декабря"
-    )
     val dayMonthYear = digital.split(".")
+    if (dayMonthYear.size != 3) return ""
     return try {
         val day = dayMonthYear[0].toInt()
         val month = dayMonthYear[1].toInt()
         val year = dayMonthYear[2].toInt()
-        if (day !in 1..daysInMonth(month, year) || dayMonthYear.size != 3 || month !in 1..12)
-            throw Exception()
-        String.format("%d %s %d", day, months[month], year)
-    } catch (e: Exception) {
+        if (day !in 1..daysInMonth(month, year) || month !in 1..12)
+            throw IllegalArgumentException()
+        String.format("%d %s %d", day, monthsFun(true, dayMonthYear[1]), year)
+    } catch (e: IllegalArgumentException) {
         ""
     }
 
@@ -266,7 +245,37 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+
+
+fun fromRoman(roman: String): Int {
+    val abc = mapOf(
+        'M' to 6,
+        'D' to 5,
+        'C' to 4,
+        'L' to 3,
+        'X' to 2,
+        'V' to 1,
+        'I' to 0
+    )
+    var count = 0
+    var lastIndex = 7
+    var answer = 0.0
+
+    for (letter in roman) {
+        if (letter !in abc) return -1
+        val i = abc[letter]
+        answer += if (i!! <= lastIndex)
+            (2.0.pow(i / 2) * 5.0.pow((i + 1) / 2))
+        else if (i - 2 + (i % 2) == lastIndex && count == 1)
+            (2.0.pow(i / 2) * 5.0.pow((i + 1) / 2)) - 2 * (2.0.pow(lastIndex / 2) * 5.0.pow((lastIndex + 1) / 2))
+        else return -1
+        if (i == lastIndex) count++
+        else count = 1
+        if (count > 3) return -1
+        lastIndex = i
+    }
+    return answer.toInt()
+}
 
 /**
  * Очень сложная
@@ -319,7 +328,7 @@ fun illArgExCheck(commands: String): Boolean {
     return (count != 0)
 }
 
-fun skipDeadCycle(commands: String, start: Int): Int {
+fun skipEmtyCycle(commands: String, start: Int): Int {
     var count = 1
     var ind = start
     while (count > 0) {
@@ -346,7 +355,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '[' -> {
                 if (array[position] != 0) cycleStarts.add(i)
                 else {
-                    i = skipDeadCycle(commands, i + 1)
+                    i = skipEmtyCycle(commands, i + 1)
                 }
             }
             ']' -> {
