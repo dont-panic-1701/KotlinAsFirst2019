@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.util.*
 
 /**
  * Пример
@@ -53,7 +54,21 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val numbers = MutableList(substrings.size) { 0 }
+    for (line in File(inputName).readLines()) {
+        for (i in 0 until substrings.size) {
+            var index = line.indexOf(substrings[i], ignoreCase = true)
+            while (index != -1) {
+                numbers[i]++
+                index = line.indexOf(substrings[i], index + 1, true)
+            }
+        }
+    }
+    return substrings.zip(numbers).toMap()
+}
+
+
 
 
 /**
@@ -69,8 +84,35 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
+
+
+
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val dictionary = mapOf(
+        'ы' to 'и',
+        'я' to 'а',
+        'ю' to 'у',
+        'Ы' to 'И',
+        'Я' to 'А',
+        'Ю' to 'У'
+    )
+    val letters = setOf('ж', 'Ж', 'ч', 'Ч', 'ш', 'Ш', 'щ', 'Щ')
+    var lastWasIt = false
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        val sb = StringBuilder()
+        for (char in line) {
+            if (lastWasIt && char in dictionary.keys) {
+                sb.append(dictionary[char])
+            } else
+                sb.append(char)
+            lastWasIt = false
+            if (char in letters) lastWasIt = true
+        }
+        writer.write(sb.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -209,7 +251,21 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var answer = mutableSetOf<String>()
+    var maxLength = 0
+    for (word in File(inputName).readLines()) {
+        val len = word.length
+        if (len == word.toLowerCase().toSet().size) {
+            if (len == maxLength) answer.add(word)
+            if (len > maxLength) {
+                answer = mutableSetOf(word)
+                maxLength = len
+            }
+        }
+    }
+    outputStream.write(answer.joinToString(", "))
+    outputStream.close()
 }
 
 /**
@@ -258,7 +314,73 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val out = File(outputName).bufferedWriter()
+    var isLastLineBlank = true
+    val lolStack = MutableList(4) { false }
+    var lastChr = ' '
+    isLastLineBlank = true
+    out.write("<html><body>")
+    for (line in File(inputName).readLines()) {
+
+        out.newLine()
+        if (isLastLineBlank && line.isNotBlank()) out.write("<p>")
+        if (!isLastLineBlank && line.isBlank()) out.write("</p>")
+        isLastLineBlank = line.isBlank()
+
+        val sb = StringBuilder()
+        var changeLastChr: Boolean
+
+        for (char in line) {
+            changeLastChr = (char != lastChr)
+            when (char) {
+                '~' -> {
+                    if (char == lastChr)
+                        if (!lolStack[0]) {
+                            sb.append("<s>")
+                            lolStack[0] = true
+                            lastChr = 'f'
+                        } else {
+                            sb.append("</s>")
+                            lolStack[0] = false
+                            lastChr = 'u'
+                        }
+                    else true
+                }
+                '*' -> {
+                    if (char == lastChr)
+                        if (!lolStack[2]) {
+                            sb.append("<b>")
+                            lolStack[2] = true
+                            lolStack[3] = true
+                            lastChr = 'c'
+                        } else {
+                            sb.append("</b>")
+                            lolStack[2] = false
+                            lolStack[3] = false
+                            lastChr = 'k'
+                        }
+                }
+
+            }
+
+            if (lastChr == '~') sb.append(lastChr)
+            if (lastChr == '*')
+                if (!lolStack[1]) {
+                    sb.append("<i>")
+                    lolStack[1] = true
+                } else {
+                    sb.append("</i>")
+                    lolStack[1] = false
+                }
+            if (char != '*' && char != '~') sb.append(char)
+            if (changeLastChr) lastChr = char
+        }
+        if (lastChr == '*') sb.append("</i>")
+        out.write(sb.toString())
+    }
+    if (!isLastLineBlank) out.write("</p>")
+    out.write("</body></html>")
+    out.close()
 }
 
 /**
@@ -429,4 +551,3 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
-
