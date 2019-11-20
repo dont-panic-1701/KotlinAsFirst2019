@@ -315,7 +315,7 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
-    var isLastLineBlank = true
+    var isLastLineBlank: Boolean
     val lolStack = MutableList(4) { false }
     var lastChr = ' '
     isLastLineBlank = true
