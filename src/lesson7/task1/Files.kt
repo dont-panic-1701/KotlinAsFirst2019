@@ -317,7 +317,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
     var isLastLineBlank: Boolean
     val lolStack = MutableList(4) { false }
-    var lastChr = ' '
     isLastLineBlank = true
     out.write("<html><body>")
     for (line in File(inputName).readLines()) {
@@ -329,7 +328,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
         val sb = StringBuilder()
         var changeLastChr: Boolean
-
+        var lastChr = ' '
         for (char in line) {
             changeLastChr = (char != lastChr)
             when (char) {
