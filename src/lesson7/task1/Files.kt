@@ -323,9 +323,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
 
         out.newLine()
-        if (isLastLineBlank && line.isNotBlank()) out.write("<p>")
-        if (!isLastLineBlank && line.isBlank()) out.write("</p>")
-        isLastLineBlank = line.isBlank()
+        if (isLastLineBlank && line.isNotEmpty()) out.write("<p>")
+        if (!isLastLineBlank && line.isEmpty()) out.write("</p>")
+        isLastLineBlank = line.isEmpty()
 
         val sb = StringBuilder()
         var changeLastChr: Boolean
