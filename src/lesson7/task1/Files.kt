@@ -375,7 +375,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (char != '*' && char != '~') sb.append(char)
             if (changeLastChr) lastChr = char
         }
-        if (lastChr == '*') sb.append("</i>")
+        if (lastChr == '*') sb.append(if (!lolStack[1]) "<i>" else "</i>")
         out.write(sb.toString())
     }
     if (!isLastLineBlank) out.write("</p>")
