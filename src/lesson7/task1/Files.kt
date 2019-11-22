@@ -133,7 +133,7 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+TODO()
 }
 
 /**
@@ -164,7 +164,39 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var maxLen = 0
+    val lengths = mutableListOf<Int>()
+    val spaces = mutableListOf<Int>()
+
+    for (line in File(inputName).readLines()) {
+        var len = 0
+        var spaceCount = -1
+        for (word in line.trim(' ').split("\\s+".toRegex())) {
+            len += word.length
+            spaceCount++
+        }
+        lengths.add(len)
+        spaces.add(spaceCount)
+        if (len + spaceCount > maxLen) maxLen = len + spaceCount
+    }
+
+    for ((i, line) in File(inputName).readLines().withIndex()) {
+        if (i != 0) writer.newLine()
+        if (line.isBlank() || spaces[i] == 0) {
+            writer.write(line.trim(' '))
+            continue
+        }
+        val minSpace = (maxLen - lengths[i]) / spaces[i]
+        val leftovers = (maxLen - lengths[i]) % spaces[i]
+        for ((x, word) in line.trim(' ').split(" ").withIndex()) {
+            writer.write(word)
+            if (x < spaces[i]) writer.write(" ".repeat(minSpace))
+            if (x < leftovers)
+                writer.write(" ")
+        }
+    }
+    writer.close()
 }
 
 /**
