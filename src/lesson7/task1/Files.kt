@@ -346,11 +346,10 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
     val lolStack = MutableList(4) { false }
-    var paragraph = true
-
-    out.write("<html><body><p>")
-    for (line in File(inputName).readLines()) {
-
+    var paragraph = false
+    val file = File(inputName).readLines()
+    out.write("<html><body>")
+    for (line in file) {
         out.newLine()
         if (!paragraph && line.isNotEmpty()) {
             out.write("<p>"); paragraph = true
@@ -413,6 +412,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         out.write(sb.toString())
     }
+    if (file.size == 1 && file[0].isEmpty()) out.write("<p></p>")
     if (paragraph) out.write("</p>")
     out.write("</body></html>")
     out.close()
