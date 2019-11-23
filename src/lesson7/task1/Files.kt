@@ -3,7 +3,6 @@
 package lesson7.task1
 
 import java.io.File
-import java.util.*
 
 /**
  * Пример
@@ -347,15 +346,18 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
     val lolStack = MutableList(4) { false }
-    var isLastLineEmpty = false
+    var paragraph = true
 
     out.write("<html><body><p>")
     for (line in File(inputName).readLines()) {
 
         out.newLine()
-        if (isLastLineEmpty && line.isNotEmpty()) out.write("<p>")
-        if (!isLastLineEmpty && line.isEmpty()) out.write("</p>")
-        isLastLineEmpty = line.isEmpty()
+        if (!paragraph && line.isNotEmpty()) {
+            out.write("<p>"); paragraph = true
+        }
+        if (paragraph && line.isEmpty()) {
+            out.write("</p>"); paragraph = false
+        }
 
         val sb = StringBuilder()
         var changeLastChr: Boolean
@@ -411,7 +413,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         out.write(sb.toString())
     }
-    if (!isLastLineEmpty) out.write("</p>")
+    if (paragraph) out.write("</p>")
     out.write("</body></html>")
     out.close()
 }
