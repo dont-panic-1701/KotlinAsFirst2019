@@ -94,9 +94,9 @@ fun sibilants(inputName: String, outputName: String) {
         'Ю' to 'У'
     )
     val letters = setOf('ж', 'Ж', 'ч', 'Ч', 'ш', 'Ш', 'щ', 'Щ')
-    var lastWasIt = false
     val writer = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
+        var lastWasIt = false
         val sb = StringBuilder()
         for (char in line) {
             if (lastWasIt && char in dictionary.keys) {
