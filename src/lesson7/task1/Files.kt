@@ -346,16 +346,16 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
-    var isLastLineBlank: Boolean
     val lolStack = MutableList(4) { false }
-    isLastLineBlank = true
+    var isLastLineEmpty = true
+
     out.write("<html><body>")
     for (line in File(inputName).readLines()) {
 
         out.newLine()
-        if (isLastLineBlank && line.isNotBlank()) out.write("<p>")
-        if (!isLastLineBlank && line.isBlank()) out.write("</p>")
-        isLastLineBlank = line.isEmpty()
+        if (isLastLineEmpty && line.isNotEmpty()) out.write("<p>")
+        if (!isLastLineEmpty && line.isEmpty()) out.write("</p>")
+        isLastLineEmpty = line.isEmpty()
 
         val sb = StringBuilder()
         var changeLastChr: Boolean
@@ -411,7 +411,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         out.write(sb.toString())
     }
-    if (!isLastLineBlank) out.write("</p>")
+    if (!isLastLineEmpty) out.write("</p>")
     out.write("</body></html>")
     out.close()
 }
