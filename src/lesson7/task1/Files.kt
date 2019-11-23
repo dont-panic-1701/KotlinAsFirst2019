@@ -186,7 +186,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
         val minSpace = (maxLen - lengths[i]) / spaces[i]
         val leftovers = (maxLen - lengths[i]) % spaces[i]
-        for ((x, word) in line.trim(' ').split(" ").withIndex()) {
+        for ((x, word) in line.trim(' ').split("\\s+".toRegex()).withIndex()) {
             writer.write(word)
             if (x < spaces[i]) writer.write(" ".repeat(minSpace))
             if (x < leftovers)
