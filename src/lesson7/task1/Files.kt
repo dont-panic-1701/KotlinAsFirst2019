@@ -347,9 +347,9 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val out = File(outputName).bufferedWriter()
     val lolStack = MutableList(4) { false }
-    var isLastLineEmpty = true
+    var isLastLineEmpty = false
 
-    out.write("<html><body>")
+    out.write("<html><body><p>")
     for (line in File(inputName).readLines()) {
 
         out.newLine()
