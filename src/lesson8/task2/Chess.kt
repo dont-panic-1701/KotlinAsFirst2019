@@ -2,6 +2,8 @@
 
 package lesson8.task2
 
+import kotlin.math.sign
+
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
  * Поэтому, обе координаты клетки (горизонталь row, вертикаль column) могут находиться в пределах от 1 до 8.
@@ -22,7 +24,10 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String {
+        if (!Square(column, row).inside()) return ""
+        return "${(96 + column).toChar()}$row"
+    }
 }
 
 /**
@@ -32,7 +37,13 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    val column = notation[0].toInt() - 96
+    val row = notation[1].toInt() - 48
+    if (notation.length != 2 || !Square(column, row).inside())
+        throw IllegalArgumentException()
+    return Square(column, row)
+}
 
 /**
  * Простая
@@ -156,7 +167,21 @@ fun kingMoveNumber(start: Square, end: Square): Int = TODO()
  *          kingTrajectory(Square(3, 5), Square(6, 2)) = listOf(Square(3, 5), Square(4, 4), Square(5, 3), Square(6, 2))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun kingTrajectory(start: Square, end: Square): List<Square> {
+    val answer = mutableListOf(start)
+    var deltaX = end.column - start.column
+    var deltaY = end.row - start.row
+    while (deltaX != 0 || deltaY != 0) {
+        deltaX -= deltaX.sign
+        deltaY -= deltaY.sign
+        answer.add(Square(end.column - deltaX, end.row - deltaY))
+    }
+    while (deltaX != 0 && deltaY != 0) {
+        if (deltaX != 0) deltaX -= deltaX.sign else deltaY -= deltaY.sign
+        answer.add(Square(end.column - deltaX, end.row - deltaY))
+    }
+    return answer
+}
 
 /**
  * Сложная
