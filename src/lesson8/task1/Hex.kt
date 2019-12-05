@@ -3,6 +3,8 @@
 package lesson8.task1
 
 import kotlin.math.abs
+import kotlin.math.sign
+
 
 /**
  * Точка (гекс) на шестиугольной сетке.
@@ -38,7 +40,7 @@ data class HexPoint(val x: Int, val y: Int) {
      * Расстояние вычисляется как число единичных отрезков в пути между двумя гексами.
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
-    fun distance(other: HexPoint): Int = abs(y - other.y) + abs(x - other.x + y - other.y)
+    fun distance(other: HexPoint): Int = (abs(x - other.x) + abs(y - other.y) + abs(x + y - other.x - other.y)) / 2
 
     override fun toString(): String = "$y.$x"
 }
@@ -177,7 +179,29 @@ fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
  *       HexPoint(y = 5, x = 3)
  *     )
  */
-fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> = TODO()
+fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
+    val answer = mutableListOf(from)
+    var deltaX = to.x - from.x
+    var deltaY = to.y - from.y
+    val deltaZ =
+        abs(deltaX) + abs(deltaY) - from.distance(to) // имей в виду что я считаю поинт = x, y а не как надо, посмотрим, изменит ли это что-нибудь
+    var upOrDown: Int
+    for (i in 1..deltaZ) {
+        upOrDown = if (deltaX > deltaY) 1 else -1
+        deltaX -= upOrDown
+        deltaY += upOrDown
+        answer.add(HexPoint(to.x - deltaX, to.y - deltaY))
+    }
+    for (i in 1..abs(deltaX)) {
+        deltaX -= deltaX.sign
+        answer.add(HexPoint(to.x - deltaX, to.y - deltaY))
+    }
+    for (i in 1..abs(deltaY)) {
+        deltaY -= deltaY.sign
+        answer.add(HexPoint(to.x - deltaX, to.y - deltaY))
+    }
+    return answer
+}
 
 /**
  * Очень сложная
