@@ -95,22 +95,22 @@ fun sibilants(inputName: String, outputName: String) {
         'Ю' to 'У'
     )
     val letters = setOf('ж', 'Ж', 'ч', 'Ч', 'ш', 'Ш', 'щ', 'Щ')
-    val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        var lastWasIt = false
-        val sb = StringBuilder()
-        for (char in line) {
-            if (lastWasIt && char in dictionary.keys) {
-                sb.append(dictionary[char])
-            } else
-                sb.append(char)
-            lastWasIt = false
-            if (char in letters) lastWasIt = true
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            var lastWasIt = false
+            val sb = StringBuilder()
+            for (char in line) {
+                if (lastWasIt && char in dictionary.keys) {
+                    sb.append(dictionary[char])
+                } else
+                    sb.append(char)
+                lastWasIt = false
+                if (char in letters) lastWasIt = true
+            }
+            it.write(sb.toString())
+            it.newLine()
         }
-        writer.write(sb.toString())
-        writer.newLine()
     }
-    writer.close()
 }
 
 /**
