@@ -258,7 +258,7 @@ fun fromRoman(roman: String): Int {
         'I' to 0
     )
     var count = 0
-    var lastIndex = 7
+    var lastIndex = 6
     var answer = 0.0
 
     for (letter in roman) {
