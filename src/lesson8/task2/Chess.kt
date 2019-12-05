@@ -38,9 +38,11 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
+    if (notation.length != 2)
+        throw IllegalArgumentException()
     val column = notation[0].toInt() - 96
     val row = notation[1].toInt() - 48
-    if (notation.length != 2 || !Square(column, row).inside())
+    if (!Square(column, row).inside())
         throw IllegalArgumentException()
     return Square(column, row)
 }
