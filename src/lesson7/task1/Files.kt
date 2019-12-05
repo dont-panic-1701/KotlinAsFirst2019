@@ -57,10 +57,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val numbers = MutableList(substrings.size) { 0 }
     for (line in File(inputName).readLines()) {
         for (i in 0 until substrings.size) {
-            var index = line.indexOf(substrings[i], ignoreCase = true)
-            while (index != -1) {
-                numbers[i]++
-                index = line.indexOf(substrings[i], index + 1, true)
+            var startIndex = -1
+            while (true) {
+                startIndex = line.indexOf(substrings[i], startIndex + 1, true)
+                if (startIndex != -1)
+                    numbers[i]++
+                else break
             }
         }
     }
