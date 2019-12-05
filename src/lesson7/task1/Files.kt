@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.max
 
 /**
  * Пример
@@ -177,7 +178,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
         lengths.add(len)
         spaces.add(spaceCount)
-        if (len + spaceCount > maxLen) maxLen = len + spaceCount
+        maxLen = max(len + spaceCount, maxLen)
     }
 
     for ((i, line) in File(inputName).readLines().withIndex()) {
