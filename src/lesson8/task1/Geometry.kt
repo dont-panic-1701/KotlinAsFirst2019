@@ -89,6 +89,7 @@ data class Circle(val center: Point, val radius: Double) {
     fun contains(p: Point): Boolean = radius >= center.distance(p)
 }
 
+
 /**
  * Отрезок между двумя точками
  */
