@@ -2,6 +2,7 @@
 
 package lesson8.task2
 
+import kotlin.math.max
 import kotlin.math.sign
 
 /**
@@ -176,10 +177,6 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
     while (deltaX != 0 || deltaY != 0) {
         deltaX -= deltaX.sign
         deltaY -= deltaY.sign
-        answer.add(Square(end.column - deltaX, end.row - deltaY))
-    }
-    while (deltaX != 0 && deltaY != 0) {
-        if (deltaX != 0) deltaX -= deltaX.sign else deltaY -= deltaY.sign
         answer.add(Square(end.column - deltaX, end.row - deltaY))
     }
     return answer
