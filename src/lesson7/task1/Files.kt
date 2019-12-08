@@ -167,31 +167,32 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var maxLen = 0
     val lengths = mutableListOf<Int>()
-    val spaces = mutableListOf<Int>()
+    val theWholeText = mutableListOf<MutableList<String>>()
 
     for (line in File(inputName).readLines()) {
         var len = 0
-        var spaceCount = -1
+        val newLine = mutableListOf<String>()
         for (word in line.trim(' ').split("\\s+".toRegex())) {
             len += word.length
-            spaceCount++
+            newLine.add(word)
         }
         lengths.add(len)
-        spaces.add(spaceCount)
-        maxLen = max(len + spaceCount, maxLen)
+        theWholeText.add(newLine)
+        maxLen = max(len + newLine.size - 1, maxLen)
     }
 
-    for ((i, line) in File(inputName).readLines().withIndex()) {
+    for ((i, line) in theWholeText.withIndex()) {
         if (i != 0) writer.newLine()
-        if (line.isBlank() || spaces[i] == 0) {
-            writer.write(line.trim(' '))
+        if (line.size < 2) {
+            if (line.size == 1) writer.write(line[0])
             continue
         }
-        val minSpace = (maxLen - lengths[i]) / spaces[i]
-        val leftovers = (maxLen - lengths[i]) % spaces[i]
-        for ((x, word) in line.trim(' ').split("\\s+".toRegex()).withIndex()) {
+        val spaces = line.size - 1
+        val minSpace = (maxLen - lengths[i]) / spaces
+        val leftovers = (maxLen - lengths[i]) % spaces
+        for ((x, word) in line.withIndex()) {
             writer.write(word)
-            if (x < spaces[i]) writer.write(" ".repeat(minSpace))
+            if (x < spaces) writer.write(" ".repeat(minSpace))
             if (x < leftovers)
                 writer.write(" ")
         }
