@@ -157,11 +157,6 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
     }
     path.add(end)
     return path
-
-
-
-
-    return path
 }
 
 /**
