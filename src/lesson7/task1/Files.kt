@@ -416,7 +416,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         out.write(sb.toString())
     }
-    if (file.size == 1 && file[0].isEmpty()) out.write("<p></p>")
+    if (file.size == 1 && file[0].isEmpty() || file.isEmpty()) out.write("<p></p>")
     if (paragraph) out.write("</p>")
     out.write("</body></html>")
     out.close()
