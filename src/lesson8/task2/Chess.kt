@@ -2,7 +2,9 @@
 
 package lesson8.task2
 
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sign
 
 /**
@@ -132,7 +134,35 @@ fun bishopMoveNumber(start: Square, end: Square): Int = TODO()
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun bishopTrajectory(start: Square, end: Square): List<Square> {
+    val path = mutableListOf(start)
+    val dX = end.column - start.column
+    val dY = end.row - start.row
+    if (dX % 2 + dY % 2 == 1)
+        return listOf()
+    if (dX == dY) {
+        if (dX != 0) path.add(end)
+        return path
+    }
+    val delta = (abs(dX) - abs(dY)) / 2
+
+    if (delta > 0) {
+        if (!Square(start.column + delta * dX.sign, start.row - delta).inside())
+            path.add(Square(end.column - delta * dX.sign, end.row + delta))
+        else path.add(Square(start.column + delta * dX.sign, start.row - delta))
+    } else {
+        if (!Square(start.column + delta, start.row - delta * dY.sign).inside())
+            path.add(Square(end.column - delta, end.row + delta * dY.sign))
+        else path.add(Square(start.column + delta, start.row - delta * dY.sign))
+    }
+    path.add(end)
+    return path
+
+
+
+
+    return path
+}
 
 /**
  * Средняя
