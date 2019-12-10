@@ -107,7 +107,21 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    if (points.size < 2) throw IllegalArgumentException()
+    var segm = Segment(points[0], points[1])
+    var maxdist = points[0].distance(points[1])
+    for (i in 0 until points.size) {
+        for (j in (i + 1) until points.size) {
+            val dist = points[i].distance(points[j])
+            if (dist > maxdist) {
+                segm = Segment(points[i], points[j])
+                maxdist = dist
+            }
+        }
+    }
+    return segm
+}
 
 /**
  * Простая
@@ -115,7 +129,10 @@ fun diameter(vararg points: Point): Segment = TODO()
  * Построить окружность по её диаметру, заданному двумя точками
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
-fun circleByDiameter(diameter: Segment): Circle = TODO()
+fun circleByDiameter(diameter: Segment): Circle = Circle(
+    Point((diameter.begin.x + diameter.end.x) / 2, (diameter.begin.y + diameter.end.y) / 2),
+    diameter.begin.distance(diameter.end) / 2
+)
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -211,5 +228,17 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+    if (points.isEmpty()) throw IllegalArgumentException()
+    if (points.size == 1) return Circle(points[0], 0.0)
+
+    val diam = diameter(*points)
+    val centr = circleByDiameter(diam).center
+    val point = points.maxBy { it.distance(centr) }!!
+    return if (point != diam.end && point != diam.begin) circleByThreePoints(
+        diam.begin,
+        diam.end,
+        point
+    ) else circleByDiameter(diam)
+}
 
