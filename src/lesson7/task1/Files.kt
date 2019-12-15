@@ -17,32 +17,32 @@ import kotlin.math.max
  * их следует сохранить и в выходном файле
  */
 fun alignFile(inputName: String, lineLength: Int, outputName: String) {
-    val outputStream = File(outputName).bufferedWriter()
-    var currentLineLength = 0
-    for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) {
-            outputStream.newLine()
-            if (currentLineLength > 0) {
-                outputStream.newLine()
-                currentLineLength = 0
-            }
-            continue
-        }
-        for (word in line.split(" ")) {
-            if (currentLineLength > 0) {
-                if (word.length + currentLineLength >= lineLength) {
-                    outputStream.newLine()
+    File(outputName).bufferedWriter().use {
+        var currentLineLength = 0
+        for (line in File(inputName).readLines()) {
+            if (line.isEmpty()) {
+                it.newLine()
+                if (currentLineLength > 0) {
+                    it.newLine()
                     currentLineLength = 0
-                } else {
-                    outputStream.write(" ")
-                    currentLineLength++
                 }
+                continue
             }
-            outputStream.write(word)
-            currentLineLength += word.length
+            for (word in line.split(" ")) {
+                if (currentLineLength > 0) {
+                    if (word.length + currentLineLength >= lineLength) {
+                        it.newLine()
+                        currentLineLength = 0
+                    } else {
+                        it.write(" ")
+                        currentLineLength++
+                    }
+                }
+                it.write(word)
+                currentLineLength += word.length
+            }
         }
     }
-    outputStream.close()
 }
 
 /**
@@ -164,40 +164,40 @@ fun centerFile(inputName: String, outputName: String) {
  */
 
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    var maxLen = 0
-    val lengths = mutableListOf<Int>()
-    val theWholeText = mutableListOf<MutableList<String>>()
+    File(outputName).bufferedWriter().use {
+        var maxLen = 0
+        val lengths = mutableListOf<Int>()
+        val theWholeText = mutableListOf<MutableList<String>>()
 
-    for (line in File(inputName).readLines()) {
-        var len = 0
-        val newLine = mutableListOf<String>()
-        for (word in line.trim(' ').split("\\s+".toRegex())) {
-            len += word.length
-            newLine.add(word)
+        for (line in File(inputName).readLines()) {
+            var len = 0
+            val newLine = mutableListOf<String>()
+            for (word in line.trim(' ').split("\\s+".toRegex())) {
+                len += word.length
+                newLine.add(word)
+            }
+            lengths.add(len)
+            theWholeText.add(newLine)
+            maxLen = max(len + newLine.size - 1, maxLen)
         }
-        lengths.add(len)
-        theWholeText.add(newLine)
-        maxLen = max(len + newLine.size - 1, maxLen)
-    }
 
-    for ((i, line) in theWholeText.withIndex()) {
-        if (i != 0) writer.newLine()
-        if (line.size < 2) {
-            if (line.size == 1) writer.write(line[0])
-            continue
-        }
-        val spaces = line.size - 1
-        val minSpace = (maxLen - lengths[i]) / spaces
-        val leftovers = (maxLen - lengths[i]) % spaces
-        for ((x, word) in line.withIndex()) {
-            writer.write(word)
-            if (x < spaces) writer.write(" ".repeat(minSpace))
-            if (x < leftovers)
-                writer.write(" ")
+        for ((i, line) in theWholeText.withIndex()) {
+            if (i != 0) it.newLine()
+            if (line.size < 2) {
+                if (line.size == 1) it.write(line[0])
+                continue
+            }
+            val spaces = line.size - 1
+            val minSpace = (maxLen - lengths[i]) / spaces
+            val leftovers = (maxLen - lengths[i]) % spaces
+            for ((x, word) in line.withIndex()) {
+                it.write(word)
+                if (x < spaces) it.write(" ".repeat(minSpace))
+                if (x < leftovers)
+                    it.write(" ")
+            }
         }
     }
-    writer.close()
 }
 
 /**
@@ -284,21 +284,21 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    val outputStream = File(outputName).bufferedWriter()
-    var answer = mutableListOf<String>()
-    var maxLength = 0
-    for (word in File(inputName).readLines()) {
-        val len = word.length
-        if (len == word.toLowerCase().toSet().size) {
-            if (len == maxLength) answer.add(word)
-            if (len > maxLength) {
-                answer = mutableListOf(word)
-                maxLength = len
+    File(outputName).bufferedWriter().use {
+        var answer = mutableListOf<String>()
+        var maxLength = 0
+        for (word in File(inputName).readLines()) {
+            val len = word.length
+            if (len == word.toLowerCase().toSet().size) {
+                if (len == maxLength) answer.add(word)
+                if (len > maxLength) {
+                    answer = mutableListOf(word)
+                    maxLength = len
+                }
             }
         }
+        it.write(answer.joinToString(", "))
     }
-    outputStream.write(answer.joinToString(", "))
-    outputStream.close()
 }
 
 /**
@@ -348,78 +348,78 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val out = File(outputName).bufferedWriter()
-    val lolStack = MutableList(4) { false }
-    var paragraph = false
-    val file = File(inputName).readLines()
-    out.write("<html><body>")
-    for (line in file) {
-        out.newLine()
-        if (!paragraph && line.isNotEmpty()) {
-            out.write("<p>"); paragraph = true
-        }
-        if (paragraph && line.isEmpty()) {
-            out.write("</p>"); paragraph = false
-        }
-
-        val sb = StringBuilder()
-        var changeLastChr: Boolean
-        var lastChr = ' '
-        for (char in line) {
-            changeLastChr = (char != lastChr)
-            when (char) {
-                '~' -> {
-                    if (char == lastChr)
-                        if (!lolStack[0]) {
-                            sb.append("<s>")
-                            lolStack[0] = true
-                            lastChr = 'f'
-                        } else {
-                            sb.append("</s>")
-                            lolStack[0] = false
-                            lastChr = 'u'
-                        }
-                    else true
-                }
-                '*' -> {
-                    if (char == lastChr)
-                        if (!lolStack[2]) {
-                            sb.append("<b>")
-                            lolStack[2] = true
-                            lolStack[3] = true
-                            lastChr = 'c'
-                        } else {
-                            sb.append("</b>")
-                            lolStack[2] = false
-                            lolStack[3] = false
-                            lastChr = 'k'
-                        }
-                }
-
+    File(outputName).bufferedWriter().use {
+        val lolStack = MutableList(4) { false }
+        var paragraph = false
+        val file = File(inputName).readLines()
+        it.write("<html><body>")
+        for (line in file) {
+            it.newLine()
+            if (!paragraph && line.isNotEmpty()) {
+                it.write("<p>"); paragraph = true
+            }
+            if (paragraph && line.isEmpty()) {
+                it.write("</p>"); paragraph = false
             }
 
-            if (lastChr == '~') sb.append(lastChr)
-            if (lastChr == '*')
-                if (!lolStack[1]) {
-                    sb.append("<i>")
-                    lolStack[1] = true
-                } else {
-                    sb.append("</i>")
-                    lolStack[1] = false
+            val sb = StringBuilder()
+            var changeLastChr: Boolean
+            var lastChr = ' '
+            for (char in line) {
+                changeLastChr = (char != lastChr)
+                when (char) {
+                    '~' -> {
+                        if (char == lastChr)
+                            if (!lolStack[0]) {
+                                sb.append("<s>")
+                                lolStack[0] = true
+                                lastChr = 'f'
+                            } else {
+                                sb.append("</s>")
+                                lolStack[0] = false
+                                lastChr = 'u'
+                            }
+                        else true
+                    }
+                    '*' -> {
+                        if (char == lastChr)
+                            if (!lolStack[2]) {
+                                sb.append("<b>")
+                                lolStack[2] = true
+                                lolStack[3] = true
+                                lastChr = 'c'
+                            } else {
+                                sb.append("</b>")
+                                lolStack[2] = false
+                                lolStack[3] = false
+                                lastChr = 'k'
+                            }
+                    }
+
                 }
-            if (char != '*' && char != '~') sb.append(char)
-            if (changeLastChr) lastChr = char
+
+                if (lastChr == '~') sb.append(lastChr)
+                if (lastChr == '*')
+                    if (!lolStack[1]) {
+                        sb.append("<i>")
+                        lolStack[1] = true
+                    } else {
+                        sb.append("</i>")
+                        lolStack[1] = false
+                    }
+                if (char != '*' && char != '~') sb.append(char)
+                if (changeLastChr) lastChr = char
+            }
+            if (lastChr == '*') {
+                sb.append(if (!lolStack[1]) "<i>" else "</i>")
+                lolStack[1] = !lolStack[1]
+            }
+            it.write(sb.toString())
         }
-        if (lastChr == '*') {
-            sb.append(if (!lolStack[1]) "<i>" else "</i>")
-            lolStack[1] = !lolStack[1]
-        }
-        out.write(sb.toString())
+        if (file.size == 1 && file[0].isBlank() || file.isEmpty()) it.write("<p></p>")
+        if (paragraph) it.write("</p>")
+        it.write("</body></html>")
     }
-    if (file.size == 1 && file[0].isBlank() || file.isEmpty()) out.write("<p></p>")
-    if (paragraph) out.write("</p>")
-    out.write("</body></html>")
-    out.close()
 }
 
 /**
