@@ -209,6 +209,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  */
 fun knightMoveNumber(start: Square, end: Square): Int = TODO()
 
+
 /**
  * Очень сложная
  *
