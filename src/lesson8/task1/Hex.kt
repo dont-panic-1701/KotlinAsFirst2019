@@ -187,7 +187,7 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     var deltaX = to.x - from.x
     var deltaY = to.y - from.y
     val deltaZ =
-        abs(deltaX) + abs(deltaY) - from.distance(to) // имей в виду что я считаю поинт = x, y а не как надо, посмотрим, изменит ли это что-нибудь
+        abs(deltaX) + abs(deltaY) - from.distance(to)
     var upOrDown: Int
     for (i in 1..deltaZ) {
         upOrDown = if (deltaX > deltaY) 1 else -1
