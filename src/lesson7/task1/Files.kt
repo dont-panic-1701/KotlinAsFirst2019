@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.io.InputStream
 import kotlin.math.max
 
 /**
@@ -56,17 +57,17 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val numbers = MutableList(substrings.size) { 0 }
-    for (line in File(inputName).readLines()) {
-        for (i in 0 until substrings.size) {
-            var startIndex = -1
-            while (true) {
-                startIndex = line.indexOf(substrings[i], startIndex + 1, true)
-                if (startIndex != -1)
-                    numbers[i]++
-                else break
-            }
+    val text = File(inputName).readText()
+    for (i in 0 until substrings.size) {
+        var startIndex = -1
+        while (true) {
+            startIndex = text.indexOf(substrings[i], startIndex + 1, true)
+            if (startIndex != -1)
+                numbers[i]++
+            else break
         }
     }
+
     return substrings.zip(numbers).toMap()
 }
 
@@ -349,7 +350,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
-        val lolStack = MutableList(4) { false }
+        val stack = MutableList(4) { false }
         var paragraph = false
         val file = File(inputName).readLines()
         it.write("<html><body>")
@@ -370,28 +371,28 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 when (char) {
                     '~' -> {
                         if (char == lastChr)
-                            if (!lolStack[0]) {
+                            if (!stack[0]) {
                                 sb.append("<s>")
-                                lolStack[0] = true
+                                stack[0] = true
                                 lastChr = 'f'
                             } else {
                                 sb.append("</s>")
-                                lolStack[0] = false
+                                stack[0] = false
                                 lastChr = 'u'
                             }
                         else true
                     }
                     '*' -> {
                         if (char == lastChr)
-                            if (!lolStack[2]) {
+                            if (!stack[2]) {
                                 sb.append("<b>")
-                                lolStack[2] = true
-                                lolStack[3] = true
+                                stack[2] = true
+                                stack[3] = true
                                 lastChr = 'c'
                             } else {
                                 sb.append("</b>")
-                                lolStack[2] = false
-                                lolStack[3] = false
+                                stack[2] = false
+                                stack[3] = false
                                 lastChr = 'k'
                             }
                     }
@@ -400,19 +401,19 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
                 if (lastChr == '~') sb.append(lastChr)
                 if (lastChr == '*')
-                    if (!lolStack[1]) {
+                    if (!stack[1]) {
                         sb.append("<i>")
-                        lolStack[1] = true
+                        stack[1] = true
                     } else {
                         sb.append("</i>")
-                        lolStack[1] = false
+                        stack[1] = false
                     }
                 if (char != '*' && char != '~') sb.append(char)
                 if (changeLastChr) lastChr = char
             }
             if (lastChr == '*') {
-                sb.append(if (!lolStack[1]) "<i>" else "</i>")
-                lolStack[1] = !lolStack[1]
+                sb.append(if (!stack[1]) "<i>" else "</i>")
+                stack[1] = !stack[1]
             }
             it.write(sb.toString())
         }
